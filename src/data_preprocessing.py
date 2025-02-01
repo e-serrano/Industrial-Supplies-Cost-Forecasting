@@ -3,25 +3,40 @@ import numpy as np
 import openpyxl
 from datetime import datetime
 
-def data_preprocessing():
+def importing_company_data():
     """
-    This function reads the original Excel file with the purchases data,
-    processes it and saves the processed data to a new Excel file.
-    
+    This function imports the data from an Excel file and processes it.
+
     Returns:
-        df_purchases (DataFrame): DataFrame with the processed data
+        df_imported (DataFrame): DataFrame with the original data
     """
 
 # Import data from Excel original file
 # This data can be obtained from the company's database
-    df_purchases = pd.read_excel("data/raw/COMPRAS.xlsx", index_col=0)
+    df_imported = pd.read_excel("data/raw/raw_data.xlsx", index_col=0)
 
 # Delete the columns that are not necessary
-    df_purchases = df_purchases.drop(columns=["supplier_order_id","position_supply","supply_id","discount","pending",
+    df_imported = df_imported.drop(columns=["supplier_order_id","position_supply","supply_id","discount","pending",
                     "deliv_date_1","deliv_quant_1","deliv_note_1",
                     "deliv_date_2","deliv_quant_2","deliv_note_2",
                     "deliv_date_3","deliv_quant_3","deliv_note_3"])
 
+    df_preprocessed = data_preprocessing(df_imported)
+
+    return df_preprocessed
+
+def data_preprocessing(df_to_process):
+    """
+    This function reads the original Excel file with the purchases data,
+    processes it and saves the processed data to a new Excel file.
+
+    Args:
+        df_to_process (DataFrame): DataFrame with the original data
+
+    Returns:
+        df_purchases (DataFrame): DataFrame with the processed data
+    """
+    df_purchases = df_to_process.copy()
 # Fill the NaN values with the current date
     df_purchases['delivery_date'] = df_purchases['delivery_date'].fillna(pd.Timestamp(datetime.now().date()))
 
@@ -52,6 +67,6 @@ def data_preprocessing():
     df_purchases['price_change_rate'].fillna(mean_value, inplace=True)
 
 # Save the dataframe to a new Excel file
-    df_purchases.to_excel("data/processed/COMPRAS_processed.xlsx")
+    df_purchases.to_excel("data/processed/processed_data.xlsx")
 
     return df_purchases

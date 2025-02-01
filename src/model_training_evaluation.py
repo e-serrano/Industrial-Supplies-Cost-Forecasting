@@ -1,4 +1,4 @@
-from data_preprocessing import data_preprocessing
+from data_preprocessing import importing_company_data
 from feature_engineering import feature_engineering
 import numpy as np
 from sklearn.model_selection import TimeSeriesSplit
@@ -19,7 +19,7 @@ def train_evaluate_model(model_to_train):
     """
 
 # Data preprocessing and feature engineering
-    processed_dataframe = data_preprocessing()
+    processed_dataframe = importing_company_data()
     final_dataframe = feature_engineering(processed_dataframe)
 
 # Split the data into training and test sets
