@@ -1,6 +1,4 @@
-# Industrial-Supplies-Cost-Forecasting
-
-# Forecasting Industrial Goods Costs
+# Forecasting Industrial Supplies Costs
 
 ## Project Overview
 This project aims to forecast the cost of various industrial goods using historical data from the company's database. By leveraging machine learning models, the goal is to enhance procurement decision-making and optimize inventory planning.
