@@ -20,6 +20,10 @@ def feature_engineering(processed_dataframe):
     processed_dataframe["supplier_encoded"] = processed_dataframe["supplier_name"].map(supplier_avg_cost)
     processed_dataframe["supply_ref_encoded"] = processed_dataframe["supply_reference"].map(supply_ref_avg_cost)
 
+# Conversion of date columns to datetime
+    processed_dataframe["delivery_date"] = pd.to_datetime(processed_dataframe["delivery_date"])
+    processed_dataframe["order_date"] = pd.to_datetime(processed_dataframe["order_date"])
+
 # Creation of new categories for time series
     processed_dataframe["lead_time"] = (processed_dataframe["delivery_date"] - processed_dataframe["order_date"]).dt.days  # Delivery time in days
     processed_dataframe["month"] = processed_dataframe["order_date"].dt.month  # Month of order
