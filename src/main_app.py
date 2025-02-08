@@ -16,8 +16,8 @@ st.title("Industrial Goods Cost Forecasting")
 st.write("This application predicts the cost of industrial goods based on historical data.")
 
 # Sample supplier and supply lists (replace with actual data source)
-supplier_list = ["Supplier A", "Supplier B", "Supplier C"]
-supply_list = ["Supply X", "Supply Y", "Supply Z"]
+supplier_list = ["ThyssenKrupp Materials Ibérica", "Valbruna Ibérica, S.L.", "Empresa Santa Lucía, S.A."]
+supply_list = ["BRE 130 AISI-316/316L", 'BWN 2"150RF S40 C', 'PL 1"300X3MM C']
 
 # User inputs
 st.sidebar.header("Input Features")
