@@ -1,2 +1,4 @@
 raw_data.xlsx
 processed_data.xlsx
+src/__pycache__/
+*.py[cod]
