@@ -7,8 +7,8 @@ from feature_engineering import feature_engineering_prediction
 
 # Load the trained model
 MODEL_PATH = "models/best_model.pkl"
-SUPPLIER_AVG_COST_PATH = "supplier_avg_cost.joblib"
-SUPPLY_AVG_COST_PATH = "supply_ref_avg_cost.joblib"
+SUPPLIER_AVG_COST_PATH = "models/supplier_avg_cost.joblib"
+SUPPLY_AVG_COST_PATH = "models/supply_ref_avg_cost.joblib"
 if os.path.exists(MODEL_PATH):
     model = joblib.load(MODEL_PATH)
     supplier_avg_cost = joblib.load(SUPPLIER_AVG_COST_PATH)

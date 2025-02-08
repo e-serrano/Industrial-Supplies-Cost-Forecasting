@@ -19,8 +19,8 @@ def feature_engineering_training(processed_dataframe):
     supply_ref_avg_cost = processed_dataframe.groupby("supply_reference")["unit_value"].mean().to_dict()
 
 # Save the dictionaries to use them in the prediction
-    joblib.dump(supplier_avg_cost, "supplier_avg_cost.joblib")
-    joblib.dump(supply_ref_avg_cost, "supply_ref_avg_cost.joblib")
+    joblib.dump(supplier_avg_cost, "models/supplier_avg_cost.joblib")
+    joblib.dump(supply_ref_avg_cost, "models/supply_ref_avg_cost.joblib")
 
     processed_dataframe["supplier_encoded"] = processed_dataframe["supplier_name"].map(supplier_avg_cost)
     processed_dataframe["supply_ref_encoded"] = processed_dataframe["supply_reference"].map(supply_ref_avg_cost)
