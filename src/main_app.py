@@ -2,12 +2,16 @@ import streamlit as st
 import pandas as pd
 import joblib
 import os
-from feature_engineering import feature_engineering
+from feature_engineering import feature_engineering_prediction
 
 # Load the trained model
 MODEL_PATH = "models/best_model.pkl"
+SUPPLIER_AVG_COST_PATH = "supplier_avg_cost.joblib"
+SUPPLY_AVG_COST_PATH = "supply_ref_avg_cost.joblib"
 if os.path.exists(MODEL_PATH):
     model = joblib.load(MODEL_PATH)
+    supplier_avg_cost = joblib.load(SUPPLIER_AVG_COST_PATH)
+    supply_ref_avg_cost = joblib.load(SUPPLY_AVG_COST_PATH)
 else:
     st.error("Model file not found. Please train the model and place it in the 'models' directory.")
     st.stop()
@@ -37,7 +41,7 @@ input_data = pd.DataFrame({
 })
 
 # Preprocess input
-processed_input = feature_engineering(input_data)
+processed_input = feature_engineering_prediction(input_data, supplier_avg_cost, supply_ref_avg_cost)
 
 # Make prediction
 if st.button("Predict Cost"):

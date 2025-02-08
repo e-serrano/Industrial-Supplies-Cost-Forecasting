@@ -1,8 +1,7 @@
 from data_preprocessing import importing_company_data
-from feature_engineering import feature_engineering
+from feature_engineering import feature_engineering_training
 import numpy as np
 from sklearn.model_selection import TimeSeriesSplit
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 def train_evaluate_model(model_to_train):
@@ -20,7 +19,7 @@ def train_evaluate_model(model_to_train):
 
 # Data preprocessing and feature engineering
     processed_dataframe = importing_company_data()
-    final_dataframe = feature_engineering(processed_dataframe)
+    final_dataframe = feature_engineering_training(processed_dataframe)
 
 # Split the data into training and test sets
     X = final_dataframe[['quantity', 'price_change_rate', 'supplier_encoded', 'supply_ref_encoded', 'lead_time', 'month', 'year']]
