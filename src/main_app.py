@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 import os
 from feature_engineering import feature_engineering_prediction
@@ -37,7 +38,8 @@ input_data = pd.DataFrame({
     "supplier_name": [supplier_name],
     "supply_reference": [supply_reference],
     "delivery_date": [delivery_date],
-    "quantity": [quantity]
+    "quantity": [quantity],
+    "price_change_rate": [np.nan]
 })
 
 # Preprocess input
