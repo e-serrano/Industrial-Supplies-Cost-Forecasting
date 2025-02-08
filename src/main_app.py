@@ -44,8 +44,9 @@ input_data = pd.DataFrame({
 
 # Preprocess input
 processed_input = feature_engineering_prediction(input_data, supplier_avg_cost, supply_ref_avg_cost)
+x_processed_values = processed_input[['quantity', 'price_change_rate', 'supplier_encoded', 'supply_ref_encoded', 'lead_time', 'month', 'year']]
 
 # Make prediction
 if st.button("Predict Cost"):
-    prediction = model.predict(processed_input)[0]
+    prediction = model.predict(x_processed_values)[0]
     st.success(f"Predicted Cost: €{prediction:.2f}")
