@@ -34,7 +34,8 @@ def feature_engineering(processed_dataframe):
     scaler = StandardScaler()
 
     processed_dataframe['quantity'] = scaler.fit_transform(processed_dataframe[['quantity']])
-    processed_dataframe['unit_value'] = scaler.fit_transform(processed_dataframe[['unit_value']])
     processed_dataframe['lead_time'] = scaler.fit_transform(processed_dataframe[['lead_time']])
+    if 'unit_value' in processed_dataframe.columns:
+        processed_dataframe['unit_value'] = scaler.fit_transform(processed_dataframe[['unit_value']])
 
     return processed_dataframe

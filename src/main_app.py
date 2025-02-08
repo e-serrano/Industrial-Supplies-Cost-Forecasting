@@ -24,7 +24,6 @@ st.sidebar.header("Input Features")
 order_date = st.sidebar.date_input("Order Date")
 supplier_name = st.sidebar.selectbox("Supplier Name", supplier_list)
 supply_reference = st.sidebar.selectbox("Supply Reference", supply_list)
-unit_value = st.sidebar.number_input("Unit Value (€)", min_value=0.0, value=10.0)
 delivery_date = st.sidebar.date_input("Delivery Date")
 quantity = st.sidebar.number_input("Quantity", min_value=1, value=10)
 
@@ -33,7 +32,6 @@ input_data = pd.DataFrame({
     "order_date": [order_date],
     "supplier_name": [supplier_name],
     "supply_reference": [supply_reference],
-    "unit_value": [unit_value],
     "delivery_date": [delivery_date],
     "quantity": [quantity]
 })
