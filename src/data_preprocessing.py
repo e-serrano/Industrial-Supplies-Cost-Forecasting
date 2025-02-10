@@ -16,10 +16,10 @@ def importing_company_data():
     df_imported = pd.read_excel("data/raw/raw_data.xlsx", index_col=0)
 
 # Delete the columns that are not necessary
-    df_imported = df_imported.drop(columns=["supplier_order_id","position_supply","supply_id","discount","pending",
-                    "deliv_date_1","deliv_quant_1","deliv_note_1",
-                    "deliv_date_2","deliv_quant_2","deliv_note_2",
-                    "deliv_date_3","deliv_quant_3","deliv_note_3"])
+    # df_imported = df_imported.drop(columns=["supplier_order_id","position_supply","supply_id","discount","pending",
+    #                 "deliv_date_1","deliv_quant_1","deliv_note_1",
+    #                 "deliv_date_2","deliv_quant_2","deliv_note_2",
+    #                 "deliv_date_3","deliv_quant_3","deliv_note_3"])
 
     df_preprocessed = data_preprocessing(df_imported)
 
