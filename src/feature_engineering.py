@@ -35,13 +35,12 @@ def feature_engineering_training(processed_dataframe):
     processed_dataframe["year"] = processed_dataframe["order_date"].dt.year # Year of order
 
 # Standarization of numeric columns
+# Unit_value column is not included because it is the target variable
 # Negative values can be obtained of this transformation
     scaler = StandardScaler()
 
     processed_dataframe['quantity'] = scaler.fit_transform(processed_dataframe[['quantity']])
     processed_dataframe['lead_time'] = scaler.fit_transform(processed_dataframe[['lead_time']])
-    # if 'unit_value' in processed_dataframe.columns:
-    #     processed_dataframe['unit_value'] = scaler.fit_transform(processed_dataframe[['unit_value']])
 
     return processed_dataframe
 
@@ -73,6 +72,7 @@ def feature_engineering_prediction(processed_dataframe, supplier_avg_cost, suppl
     processed_dataframe["year"] = processed_dataframe["order_date"].dt.year # Year of order
 
 # Standarization of numeric columns
+# Unit_value column is not included because it is the target variable
 # Negative values can be obtained of this transformation
     scaler = StandardScaler()
 
