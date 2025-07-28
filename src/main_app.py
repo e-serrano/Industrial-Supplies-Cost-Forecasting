@@ -4,12 +4,14 @@ import joblib
 import os
 
 from feature_engineering import predict_sarimax, feature_engineering_random_forest
+from statsmodels.tsa.arima.model import ARIMAResults
+from statsmodels.tsa.statespace.sarimax import SARIMAXResults
 
 # Load all models and encoders
 LR_MODEL_PATH = "models/linear_regresion_model.pkl"
-ARIMA_MODEL_PATH = "models/arima_model.pkl"
+ARIMA_MODEL_PATH = "models/arima_model.pickle"
 SES_MODEL_PATH = "models/ses_model.pkl"
-SARIMAX_MODEL_PATH = "models/sarimax_model.pkl"
+SARIMAX_MODEL_PATH = "models/sarimax_model.pickle"
 RF_MODEL_PATH = "models/random_forest_model.pkl"
 
 ENCODERS_SARIMAX_PATH = "models/label_encoders_sarimax.pkl"
@@ -26,9 +28,11 @@ if all([os.path.exists(LR_MODEL_PATH),
         os.path.exists(SARIMAX_MODEL_PATH),
         os.path.exists(RF_MODEL_PATH)]):
     linear_regresion_model = joblib.load(LR_MODEL_PATH)
-    arima_model = joblib.load(ARIMA_MODEL_PATH)
+    # arima_model = joblib.load(ARIMA_MODEL_PATH)
+    arima_model = ARIMAResults.load(ARIMA_MODEL_PATH)
     ses_model = joblib.load(SES_MODEL_PATH)
-    sarimax_model = joblib.load(SARIMAX_MODEL_PATH)
+    # sarimax_model = joblib.load(SARIMAX_MODEL_PATH)
+    sarimax_model = SARIMAXResults.load("models/sarimax_model.pickle")
     random_forest_model = joblib.load(RF_MODEL_PATH)
 
     encoders_sarimax = joblib.load(ENCODERS_SARIMAX_PATH)
