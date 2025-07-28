@@ -64,6 +64,8 @@ def train_evaluate_arima_ses():
     df_monthly = processed_dataframe[["unit_value"]].resample("ME").mean()
     df_monthly["unit_value"] = df_monthly["unit_value"].interpolate(method="linear")
 
+    joblib.dump(df_monthly, "models/df_monthly.pkl")
+
 # Simple Exponential Smoothing (SES)
     ses_model = SimpleExpSmoothing(df_monthly["unit_value"]).fit()
     ses_forecast = ses_model.forecast(12)
