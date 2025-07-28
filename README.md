@@ -7,8 +7,8 @@ This project aims to forecast the cost of various industrial goods using histori
 1. **Data Acquisition**: Extract relevant data from the company's database.
 2. **Data Cleaning & Feature Engineering**: Use Google Colab to preprocess data, handle missing values, engineer features, and prepare datasets.
 3. **Model Selection & Training**: Compare multiple machine learning models (e.g., Linear Regression, Decision Trees, Random Forest, Gradient Boosting) and select the best-performing one.
-4. **Pipeline Development**: Structure the project into Python modules for data preprocessing, feature engineering, model training and evaluation.
-5. **Deployment**: Deploy the final model using Streamlit for an interactive user interface.
+4. **Pipeline Development**: Structure the Google Colab project into Python modules for data preprocessing, feature engineering, model training and evaluation.
+5. **Deployment**: Deploy the final model using Streamlit for an interactive user interface. 
 
 ## Project Structure
 ```
@@ -16,7 +16,7 @@ This project aims to forecast the cost of various industrial goods using histori
 │   ├── raw                     # Raw data files
 │   ├── processed               # Processed data files
 │
-├── models                      # Trained models
+├── models                      # Trained models and references for standarization
 │
 ├── notebooks                   # Jupyter/Colab notebooks
 │
@@ -46,6 +46,8 @@ Run the Streamlit app:
 ```sh
 streamlit run main_app.py
 ```
+Or visit the Streamlit Cloud App:
+[Industrial Supplies Forecasting](https://industrial-supplies-forecasting.streamlit.app/)
 
 ## Dependencies
 See `requirements.txt` for a full list of required libraries.
