@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
-import openpyxl
-from datetime import datetime
+from sklearn.linear_model import LinearRegression
 
 def importing_company_data():
     """
@@ -15,15 +14,10 @@ def importing_company_data():
 # This data can be obtained from the company's database
     df_imported = pd.read_excel("data/raw/raw_data.xlsx", index_col=0)
 
-# Delete the columns that are not necessary
-    # df_imported = df_imported.drop(columns=["supplier_order_id","position_supply","supply_id","discount","pending",
-    #                 "deliv_date_1","deliv_quant_1","deliv_note_1",
-    #                 "deliv_date_2","deliv_quant_2","deliv_note_2",
-    #                 "deliv_date_3","deliv_quant_3","deliv_note_3"])
-
     df_preprocessed = data_preprocessing(df_imported)
 
     return df_preprocessed
+
 
 def data_preprocessing(df_to_process):
     """
@@ -37,36 +31,115 @@ def data_preprocessing(df_to_process):
         df_purchases (DataFrame): DataFrame with the processed data
     """
     df_purchases = df_to_process.copy()
-# Fill the NaN values with the current date
-    df_purchases['delivery_date'] = df_purchases['delivery_date'].fillna(pd.Timestamp(datetime.now().date()))
 
-# Changing the order of the columns of the dataframe
-    new_column_order = ["order_date", "delivery_date", "supplier_name", "supply_reference","unit_value","quantity"]
+# Select the item "TA 1/2"NPT-M 316/316L" which is the real product (not extra cargos) with the most number of samples
+    df_purchases = df_purchases[df_purchases['supply_reference'] == 'TA 1/2"NPT-M 316/316L']
+
+# Deleting column of product reference
+    df_purchases = df_purchases.drop(columns=["supply_reference"])
+
+# Setting date columns as datetime and unit_value as float
+    df_purchases["delivery_date"] = pd.to_datetime(df_purchases["delivery_date"], errors='coerce')
+    df_purchases["order_date"] = pd.to_datetime(df_purchases["order_date"], errors='coerce')
+    df_purchases['unit_value'] = df_purchases['unit_value'].astype(str).str.replace(',', '.').astype(float)
+
+# Change the order of columns in dataframe
+    new_column_order = ["order_date", "delivery_date", "supplier_name","unit_value","quantity"]
     df_purchases = df_purchases[new_column_order]
 
-#Calculation of the relative change in the unit price of a product compared to previous purchases
-    df_purchases = df_purchases.sort_values(by=['supply_reference', 'order_date'])
+# Sorting dataframe by order date
+    df_purchases = df_purchases.sort_values(by=['order_date'])
 
-# Calculate the previous unit price for each product
-    df_purchases['previous_unit_value'] = df_purchases.groupby('supply_reference')['unit_value'].shift(1)
+# Fill data for items not delivered with the last day of working before christmas holidays
+    df_purchases['delivery_date'] = df_purchases['delivery_date'].fillna(pd.Timestamp('2024-12-20'))
 
-# Calculate the rate of change in the unit price
-    df_purchases['price_change_rate'] = ((df_purchases['unit_value'] - df_purchases['previous_unit_value']) / df_purchases['previous_unit_value']) * 100
-
-# Fill the NaN values (which appear for the first purchase of each product) with 0 or an appropriate value
-    df_purchases['price_change_rate'] = df_purchases['price_change_rate'].fillna(0)
-
-# Verify if infinite or NaN values in new column and replacing them
-    num_infinite_values = np.isinf(df_purchases['price_change_rate']).sum()
-    num_nan_values = df_purchases['price_change_rate'].isnull().sum()
-
-    if num_infinite_values > 0:
-        df_purchases['price_change_rate'].replace([np.inf, -np.inf], np.nan, inplace=True)
-
-    mean_value = df_purchases['price_change_rate'].mean()
-    df_purchases['price_change_rate'].fillna(mean_value, inplace=True)
+# Changing suppliers names to a simply version
+    df_purchases.replace('JD DELCORTE s.a.s.', 'DELCORTE', inplace=True)
+    df_purchases.replace('SIDSA-Suministros Industrialesm', 'SIDSA', inplace=True)
+    df_purchases.replace('Mecánica Egarense, S.A.', 'EGARENSE', inplace=True)
 
 # Save the dataframe to a new Excel file
     df_purchases.to_excel("data/processed/processed_data.xlsx")
 
+    return df_purchases
+
+
+def synthetic_data_creation():
+    """
+    This function creates synthetic data based on the real data to simulate future orders.
+    
+    Returns:
+        df_synthetic (DataFrame): DataFrame with the synthetic data
+    """
+
+    df_raw_data = importing_company_data()
+# Calculate trend with regression on monthly mean
+    monthly_avg = df_raw_data.groupby(pd.Grouper(key='order_date', freq='ME'))['unit_value'].mean().interpolate()
+    X = np.arange(len(monthly_avg)).reshape(-1, 1)
+    y = monthly_avg.values
+    model = LinearRegression().fit(X, y)
+
+# Create 450 random order dates
+    n_samples = 450
+    start_date = df_raw_data['order_date'].min()
+    end_date = df_raw_data['order_date'].max()
+    date_range = pd.date_range(start=start_date, end=end_date, freq='D')
+
+# Remove real order dates from the date range
+    real_dates = df_raw_data['order_date'].dt.date.unique()  # Only the unique dates
+    date_range = date_range[~date_range.isin(real_dates)]  # Exclude real dates
+
+# Generate unique random order dates
+    order_dates = np.random.choice(date_range, size=n_samples, replace=False)
+
+# Calculate temporal position to apply trend
+    order_dates_sorted = np.sort(order_dates)
+    relative_months = ((pd.to_datetime(order_dates_sorted) - pd.to_datetime(start_date)) / pd.Timedelta(days=30)).astype(int)
+    relative_months = pd.Series(relative_months).clip(0, len(monthly_avg) - 1)
+    trend = model.predict(relative_months.values.reshape(-1, 1))
+
+# Simulate quantities (integer values multiples of 50)
+    real_quantities = df_raw_data['quantity'].dropna()
+    min_q = max((min(real_quantities) // 50) * 50, 50) # Ensure minimum values is 50
+    max_q = (max(real_quantities) // 50) * 50
+    synthetic_quantities = np.random.choice(np.arange(min_q, max_q + 1, 50), size=n_samples)
+
+# Simulate urgency (delivery days)
+    delivery_days = np.random.randint(5, 31, size=n_samples)
+    delivery_dates = order_dates_sorted + pd.to_timedelta(delivery_days, unit='D')
+
+# Simulate suppliers
+    real_suppliers = df_raw_data['supplier_name'].dropna().unique()
+    synthetic_suppliers = np.random.choice(real_suppliers, size=n_samples)
+
+# Parameters of synthetic model
+    alpha = 2    # Quantity impact
+    beta = 3    # Urgency impact
+    noise = np.random.normal(0, 0.15, size=n_samples)
+
+# Calculate unit_value based on realistic logic
+    unit_values = trend + alpha * (1 / synthetic_quantities) + beta * (1 / delivery_days) + noise
+
+# Adjust synthetic values to be over real minimum
+    scaling_factor = np.mean(df_raw_data['unit_value']) / np.mean(unit_values)
+    unit_values_adjusted = unit_values * scaling_factor
+
+# Ensure that the adjusted values do not fall below the actual minimum value
+    unit_values_adjusted = np.clip(unit_values_adjusted, np.min(df_raw_data['unit_value']), np.max(df_raw_data['unit_value']))
+
+# Create synthetic DataFrame
+    df_synthetic = pd.DataFrame({
+        'order_date': order_dates_sorted,
+        'delivery_date': delivery_dates,
+        'supplier_name': synthetic_suppliers,
+        'unit_value': unit_values,
+        'quantity': synthetic_quantities,
+    })
+
+    df_purchases = pd.concat([df_raw_data, df_synthetic], ignore_index=True)
+    df_purchases = df_purchases.sort_values(by=['order_date'])
+
+# Creation of new category based on difference between order date and delivery date
+    df_purchases["delivery_days"] = (df_purchases["delivery_date"] - df_purchases["order_date"]).dt.days
+    
     return df_purchases
