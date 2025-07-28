@@ -57,7 +57,7 @@ st.sidebar.header("Input Features")
 order_date = st.sidebar.date_input("Order Date")
 supplier_name = st.sidebar.selectbox("Supplier Name", supplier_list)
 delivery_date = st.sidebar.date_input("Delivery Date")
-quantity = st.sidebar.number_input("Quantity")
+quantity = st.sidebar.number_input("Quantity", min_value=0, step=1, format="%d")
 
 # Create input DataFrame
 input_data = pd.DataFrame({
@@ -66,6 +66,9 @@ input_data = pd.DataFrame({
     "delivery_date": [delivery_date],
     "quantity": [quantity]
 })
+
+input_data["order_date"] = pd.to_datetime(input_data["order_date"])
+input_data["delivery_date"] = pd.to_datetime(input_data["delivery_date"])
 
 X_rf, _, _, _ = feature_engineering_random_forest(input_data, label_encoders=encoders_random_forest, min_date=pd.Timestamp("2020-01-01"))
 
