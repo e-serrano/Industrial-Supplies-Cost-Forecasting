@@ -1,34 +1,26 @@
-from sklearn.linear_model import LinearRegression
-from sklearn.tree import DecisionTreeRegressor
-from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
-import lightgbm as lgb
-from model_training_evaluation import train_evaluate_model
+from data_preprocessing import synthetic_data_creation
+from model_training_evaluation import train_evaluate_linear_regression, train_evaluate_arima_ses, train_evaluate_sarimax, train_evaluate_random_forest 
 import joblib
 
 """
 This script trains and evaluates different machine learning models to predict the unit value
-of a product based on historical data. The best model is saved to a file.
+of a product based on historical data. 
+Models are saved to a file.
 """
 
-# models = {
-#     "Linear Regression": LinearRegression(),
-#     "Decision Tree": DecisionTreeRegressor(random_state=42),
-#     "Random Forest": RandomForestRegressor(random_state=42),
-#     "Gradient Boosting": GradientBoostingRegressor(random_state=42),
-#     "LightGBM": lgb.LGBMRegressor(random_state=42),
-# }
+linear_regresion_model = train_evaluate_linear_regression()
 
-models = {
-    "Random Forest": RandomForestRegressor(random_state=42),
-}
+arima_model, ses_model = train_evaluate_arima_ses()
 
-for model_name, model in models.items():
-    model, average_metrics = train_evaluate_model(model)
-    print(f"Average metrics for {model_name}: {average_metrics}\n")
+df_purchases = synthetic_data_creation()
 
+sarimax_model = train_evaluate_sarimax(df_purchases)
 
-# Save the best model
-# In this case, the best model is the Random Forest.
-# If you want to save a different model, change the model name.
-best_model = models["Random Forest"]
-joblib.dump(best_model, "models/best_model.pkl")
+random_forest_model = train_evaluate_random_forest(df_purchases)
+
+# Save each model
+joblib.dump(linear_regresion_model, "models/linear_regresion_model.pkl")
+joblib.dump(arima_model, "models/arima_model.pkl")
+joblib.dump(ses_model, "models/ses_model.pkl")
+joblib.dump(sarimax_model, "models/sarimax_model.pkl")
+joblib.dump(random_forest_model, "models/random_forest_model.pkl")
