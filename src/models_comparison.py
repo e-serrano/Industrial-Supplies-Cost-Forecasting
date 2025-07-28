@@ -20,7 +20,9 @@ random_forest_model = train_evaluate_random_forest(df_purchases)
 
 # Save each model
 joblib.dump(linear_regresion_model, "models/linear_regresion_model.pkl")
-joblib.dump(arima_model, "models/arima_model.pkl")
+arima_model.save("models/arima_model.pickle")
+# joblib.dump(arima_model, "models/arima_model.pkl")
 joblib.dump(ses_model, "models/ses_model.pkl")
-joblib.dump(sarimax_model, "models/sarimax_model.pkl")
+# joblib.dump(sarimax_model, "models/sarimax_model.pkl")
+sarimax_model.save("models/sarimax_model.pickle")
 joblib.dump(random_forest_model, "models/random_forest_model.pkl")
