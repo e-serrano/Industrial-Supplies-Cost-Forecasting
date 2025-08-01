@@ -102,10 +102,11 @@ def feature_engineering_sarimax(initial_dataframe):
     scaler = StandardScaler()
     exog_vars = ['quantity', 'delivery_days', 'supplier_encoded']
     daily_data[exog_vars] = scaler.fit_transform(daily_data[exog_vars])
+    last_date = daily_data.index[-1]
 
     joblib.dump(le, "models/label_encoders_sarimax.pkl")
     joblib.dump(scaler, "models/scaler_sarimax.pkl")
-    joblib.dump({"target_var": target_var, "transform_used": transform_used}, "models/sarimax_meta.pkl")
+    joblib.dump({"target_var": target_var, "transform_used": transform_used, "last_date": last_date}, "models/sarimax_meta.pkl")
 
     return df_sarimax, daily_data, target_var, exog_vars
 
@@ -181,7 +182,7 @@ def predict_sarimax(input_df, model, le, scaler, meta):
     supplier_name = str(row['supplier_name'])
 
     # Last historical date
-    last_date = model.model.data.dates[-1]
+    last_date = meta["last_date"]
     steps = (target_date - last_date).days
     if steps <= 0:
         raise ValueError("La fecha objetivo está en el histórico o antes. Usa el valor real.")
