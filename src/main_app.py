@@ -105,5 +105,5 @@ if st.button("Predict Cost"):
     st.success(f"Predicted Cost (LINEAR REGRESSION): {pred_lr:.2f} €")
     st.success(f"Predicted Cost (ARIMA): {pred_arima:.2f} €")
     st.success(f"Predicted Cost (SES): {pred_ses:.2f} €")
-    st.success(f"Predicted Cost (SARIMAX): {prediction_sarimax['prediccion']:.2f} €")
+    st.success(f"Predicted Cost (SARIMAX): {prediction_sarimax['Prediction']:.2f} €")
     st.success(f"Predicted Cost (RANDOM FOREST): {prediction_rf:.2f} €")
