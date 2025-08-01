@@ -2,11 +2,12 @@
 
 ## Project Overview
 This project aims to forecast the cost of various industrial goods using historical data from the company's database. By leveraging machine learning models, the goal is to enhance procurement decision-making and optimize inventory planning.
+The models used in this project are: Linear Regression, ARIMA, SES, SARIMAX and Random Forest
 
 ## Workflow
 1. **Data Acquisition**: Extract relevant data from the company's database.
 2. **Data Cleaning & Feature Engineering**: Use Google Colab to preprocess data, handle missing values, engineer features, and prepare datasets.
-3. **Model Selection & Training**: Compare multiple machine learning models (e.g., Linear Regression, Decision Trees, Random Forest, Gradient Boosting) and select the best-performing one.
+3. **Model Selection & Training**: Use multiple machine learning models and predict with each one.
 4. **Pipeline Development**: Structure the Google Colab project into Python modules for data preprocessing, feature engineering, model training and evaluation.
 5. **Deployment**: Deploy the final model using Streamlit for an interactive user interface. 
 
@@ -19,6 +20,8 @@ This project aims to forecast the cost of various industrial goods using histori
 ├── models                      # Trained models and references for standarization
 │
 ├── notebooks                   # Jupyter/Colab notebooks
+│
+├── reports                     # Documents with results and analysis of each model
 │
 ├── src                         # Source code files
 │   ├── data_preprocessing.py   # Data cleaning and transformation
