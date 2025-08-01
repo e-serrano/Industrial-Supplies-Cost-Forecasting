@@ -191,9 +191,9 @@ def predict_sarimax(input_df, model, le, scaler, meta):
     future_dates = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=steps, freq='D')
 
     # Use last historical values as base
-    last_exog = model.model.data.orig_exog[-1, :]
+    last_exog = model.model.data.orig_exog.iloc[-1, :].to_frame().T #model.model.data.orig_exog[-1, :]
     future_exog = np.tile(last_exog, (steps, 1))
-    future_exog = pd.DataFrame(future_exog, index=future_dates, columns=model.model.exog_names)
+    future_exog = pd.DataFrame(future_exog, index=future_dates, columns=last_exog.columns)
 
     # Change values for the target date
     delivery_days = (pd.Timestamp(delivery_date) - target_date).days
